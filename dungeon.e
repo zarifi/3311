@@ -1,3 +1,4 @@
+
 note
 	description: "Summary description for {DUNGEON}."
 	author: ""
@@ -225,7 +226,7 @@ feature
 				print("%N")
 			end
 
-		InvenAsk: INTEGER  --Return Inventory item number
+		InvenAsk: INTEGER  --Ask Inventory - Return Inventory item number
 			local
 				list: STRING
 				i: INTEGER
@@ -256,7 +257,7 @@ feature
 		--Battle system
 		doBattle(name:STRING; sentHP:INTEGER; sentAttack:INTEGER; sentDefense:INTEGER): BOOLEAN
 			local
-				enemyHP,enemyAttack,enemyDefense,myDefense,virusesMade,virusAttack, action: INTEGER
+				enemyHP,enemyAttack,enemyDefense,myDefense,virusesMade,virusAttack, action, selectItem: INTEGER
 			do
 				enemyHP := sentHP + level -- + generator.nextINT(1)
 				enemyAttack := sentAttack + level -- + generator
@@ -325,11 +326,108 @@ feature
 						print("You build a virus")
 
 					else
+					if action=3 then
+						myDefense := myDefense + (code + firewall) // 2
+						print("Defense improved!")
+					else
+					if action=4 then
+						system := intelligence // 2 + code // 2
+						print("System improved!")
+
+					else
+					if action=5 then --5 end
+						selectItem := InvenAsk
+
+						-- is array_item same as array_at?
+						if inventory.array_item (selectItem).is_equal ("USB") then
+							system := system + 15
+							inventory.remove
+							print("You used a USB and repaired your system by 15.")
+						else
+						if inventory.array_item (selectItem).is_equal ("TechSupport") then
+							print("You get to leave battle")
+							inventory.remove
+							Result := True
+						else
+						if inventory.array_item (selectItem).is_equal ("Anti-Virus") then
+							myDefense := myDefense + 5
+							inventory.remove
+							print("You increased your system defense by 5.")
+						else
+						if inventory.array_item (selectItem).is_equal ("Trojan Virus") then
+							virusAttack := virusAttack + 3
+							virusesMade := virusesMade + 2
+							inventory.remove
+							print("Your viruses got more powerful and you got two for free!")
+						else
+							action := 7
+							print("Not a valid item.")
+						end
+						end
+						end
+						end
+					else
+					if action=6 then
+						statRead()
 					end
+
+					end
+					end
+					end
+					end
+					end
+					if action/= 6 OR action/=7 then
+						if enemyAttack > myDefense then
+							system := system - (enemyAttack - myDefense)
+							print("Enemy attacks for ")
+							print(enemyAttack - myDefense)
+						else
+							system := system - enemyAttack
+							print("Enemy attacks for ")
+							print(enemyAttack)
+						end
+						enemyAttack := enemyAttack + 1
+					end
+					if system <= 0 then
+						Result := False
+						else
+							print("You got ")
+							print(sentHP // 2)
+							print(" cash.%N")
+							print(sentHP)
+							print(" XP.")
+
+							cash := cash + sentHP // 2
+							XP := XP + sentHP
+							Result := True
 					end
 
 				end
 			end
+
+		--Display box that had inventory
+		invenRead()
+		local
+			list: String
+		do
+			list := inventory.first
+
+			from
+				inventory.start
+			until
+				inventory.after
+			loop
+				list := inventory.item
+				print("--Inventory-- %N")
+				print(list)
+				print("%N")
+
+				inventory.forth
+			end
+
+			print("%NBitCoins: ")
+			print(cash)
+		end
 
 
 
