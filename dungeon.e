@@ -15,16 +15,16 @@ create
 feature{ANY}
 	--random: RANDOM
 	classString: STRING
-	firewall: INTEGER
-	viruses: INTEGER
-	code: INTEGER
-	system: INTEGER
-	intelligence: INTEGER
-	cash: INTEGER
-	level: INTEGER
-	XP: INTEGER
+	firewall: INTEGER assign set_firewall
+	viruses: INTEGER	assign set_virueses
+	code: INTEGER		assign set_code
+	system: INTEGER		assign set_system
+	intelligence: INTEGER	assign set_intelligence
+	cash: INTEGER			assign set_cash
+	level: INTEGER			assign set_level
+	XP: INTEGER				assign set_xp
 	mainOption: INTEGER
-	room: INTEGER
+	room: INTEGER			assign set_room
 	playerClass: INTEGER
 	inventory: ARRAYED_LIST[STRING]
 
@@ -367,7 +367,7 @@ feature
 						end
 					else
 					if action=6 then
-						statRead()
+						statRead
 					end
 
 					end
@@ -429,6 +429,46 @@ feature
 		end
 
 
+feature -- Element change
+	set_firewall(n: INTEGER)
+		do
+			firewall := n
+		end
+
+	set_viruses(n: INTEGER)
+		do
+			viruses := n
+		end
+
+	set_code(n: INTEGER)
+	do
+		code := n
+	end
+
+	set_system(n:INTEGER)
+	do
+		system := n
+	end
+
+	set_intelligence(n:INTEGER)
+	do
+		intelligence := n
+	end
+
+	set_cash(n:INTEGER)
+	do
+		cash := n
+	end
+
+	set_level(n:INTEGER)
+	do
+		level := n
+	end
+
+	set_xp(n:INTEGER)
+	do
+		XP := n
+	end
 
 
 feature{NONE}
