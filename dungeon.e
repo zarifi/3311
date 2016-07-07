@@ -1,8 +1,8 @@
-note
-	description: "Summary description for {DUNGEON}."
-	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
+
+--	description: "Summary description for {DUNGEON}."
+--	author: ""
+--	date: "$Date$"
+--	revision: "$Revision$"
 
 class
 	DUNGEON
@@ -28,6 +28,7 @@ feature
 
 	purchaseNo := 0
 	buy := 0
+	create random.make
 
 	end
 
@@ -47,7 +48,7 @@ feature{ANY}
 
 	purchaseNo: INTEGER
 	buy: INTEGER
-
+	random: RANDOM
 
 	feature {ANY}
 
@@ -58,10 +59,18 @@ feature{ANY}
 		print("<3> Jailbroken Chromebook, (4) USBs, (3) Trojan Viruses, (2) Anti-Viruses, (1) USB Mouse, (2) Tech Support, (1) Great IDE %N")
 		io.read_integer
 		purchaseNo := io.last_integer
-		print("this is the random number: ")
+		print("this is the test ")
 
-		print(random_intege)
-	
+
+		print(random_gent.item \\ 6)
+		print("%N")
+	--	random.forth
+	--	random.forth
+	--	print(random.item)
+	--	print("%N")
+	--	random.forth
+	--	print(random.item)
+
 
 	end
 
@@ -97,7 +106,7 @@ feature{ANY}
 		    	firewall := 1
 		    	viruses := 4
 			    code := 3
-				  system := random_integer
+				--  system := random_integer
 			   -- system := generator.nextInt(20) + 20
 			   -- intelligence := generator.nextInt(2) + 1
 			else if playerClass = 2 then
@@ -125,15 +134,16 @@ feature{ANY}
 		end
 
 
-feature
-	random: RANDOM
-		--
+feature{NONE}
+	random_gent: RANDOM
 	local
-		time: DATE_TIME
-	once
-		create time.make_now_utc
-	--	create Result.se
-	end
+		time:DATE_TIME
+			do
+			create time.make_now_utc
+			create Result.set_seed (time.seconds * 1000 + time.time.milli_second)
+			Result.start
+
+		end
 
 
 
