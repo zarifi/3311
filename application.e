@@ -25,14 +25,19 @@ feature {NONE} -- Initialization
 		do
 			--| Add your code here
 			print ("Welcome to the Dunegon game!%N")
+			d.classchoose
 
+			d.statread
 
 			print("You are travelling on a long journey away from your home in the land of C.")
 			print("In the distance you see a travler.%N")
-			print("%N Villager: Greetings young --.I'm afraid that I have troubling news!")
+			print("%N Villager: Greetings young")
+			print(d.classstring)
+			print(".I'm afraid that I have troubling news!")
 			print(" My hometown of Macintosh has been terrorized by a near- by Code Dungeon.%N")
 			print("Viruses leak out and murder our farmers. We may starve soon! It would be great if a ")
-			print("-- like you could help us!")
+			print(d.classstring)
+			print(" like you could help us!")
 
 			print("%NVillager: So will you accept?? %N")
 			print("<0> YES	<1> NO")
@@ -40,7 +45,9 @@ feature {NONE} -- Initialization
 			accept := io.last_integer
 
 			if accept=0 then
-				print("Vllager: Thank you so much! What is your name great -- ?%N")
+				print("Vllager: Thank you so much! What is your name great")
+				print(d.classstring)
+				print(" ?%N")
 				io.read_line
 				name := io.last_string
 
@@ -50,7 +57,7 @@ feature {NONE} -- Initialization
 				print("%N The two of you travel to the village.")
 				d.purchase
 
-				if d.purchase=1 then
+				if d.purchaseNo = 1 then
 					d.inventory.extend ("Alienware 18")
 					--Set stats for computer
 					d.firewall := d.firewall + 5
@@ -64,7 +71,7 @@ feature {NONE} -- Initialization
 					d.inventory.extend ("USB")
 
 				else
-				if d.purchase=2 then
+				if d.purchaseNo = 2 then
 					d.inventory.extend ("Macbook Pro")
 					--stats for computer
 					d.firewall := d.firewall + 4
@@ -86,7 +93,7 @@ feature {NONE} -- Initialization
 					d.inventory.extend ("USB Mouse")
 
 				else
-				if d.purchase=3 then
+				if d.purchaseNo = 3 then
 					d.inventory.extend ("Jailbroken Chromebook")
 
 					--Computer stats
@@ -123,7 +130,7 @@ feature {NONE} -- Initialization
 				print(" I'd watch out for mini boss though...")
 
 				d.cash := d.cash + 20
-				expored := False
+				explored := False
 				room := 1
 
 				from
@@ -135,22 +142,22 @@ feature {NONE} -- Initialization
 						print("You are almost ready to level up... Boss FIGHT!!")
 						if d.dobattle ("Boss", (d.xp + 1)*10, (d.xp + 1), (d.xp + 1)) then
 							print("You beat a boss and level up!")
-							d.level := d.level + 1
-							d.firewall := d.firewall + d.level
+							d.set_level(d.level + 1)
+							d.set_firewall(d.firewall + d.level)
 							d.viruses := d.viruses + d.level
-							d.code := d.code + d.level
-							d.system := d.system + d.level
-							d.intelligence := d.intelligence + d.level
-							d.xp := 0
+							d.set_code(d.code + d.level)
+							d.set_system(d.system + d.level)
+							d.set_intelligence(d.intelligence + d.level)
+							d.set_xp(0)
 							d.statread
 
 						end
 					else
 						d.mainopt
-						if d.mainopt=1 then
+						if d.mainoption = 1 then
 							print(not explored)
 							if not explored then
-								explore := True
+								explored := True
 								rand := 0
 								print("%N You explore the room. ")
 								print(rand)
@@ -162,7 +169,7 @@ feature {NONE} -- Initialization
 									open := io.last_integer
 
 									if open=1 then
-										if --generator.nextInt(100) >= 50 then
+										if random_gent.item \\ 100 >= 50 then
 											print("The chest was filled with malware that infects your system.")
 											d.system := 0
 										else
@@ -211,25 +218,26 @@ feature {NONE} -- Initialization
 
 							end
 						else
-						if d.mainopt=2 then
+						if d.mainoption=2 then
 							d.merchant
 						else
-						if d.mainopt=3 then
-							d.invenask
+						if d.mainoption=3 then
+							d.invenread
 						else
-						if d.mainopt=4 then
+						if d.mainoption=4 then
 							d.statread
 						else
-						if d.mainopt=5 then
+						if d.mainoption=5 then
 							explored := False
 							room := room + 1
 						else
-						if d.mainopt=6 then
+						if d.mainoption=6 then
 							selectItem := d.invenask
 
 							if d.inventory.array_item (selectItem).is_equal ("USB") then
 								d.system := d.system + 15
 								print("You used a USB and repaired your system by 15.")
+								d.inventory.go_i_th (selectItem)
 								d.inventory.remove
 							else
 								print("Not a valid item.")
@@ -258,7 +266,15 @@ feature
 	end
 
 
+feature{NONE}
+	random_gent: RANDOM
+	local
+		time:DATE_TIME
+			do
+			create time.make_now_utc
+			create Result.set_seed (time.seconds * 1000 + time.time.milli_second)
+			Result.start
 
-
+		end
 
 end
