@@ -16,7 +16,7 @@ feature{ANY}
 	--random: RANDOM
 	classString: STRING
 	firewall: INTEGER assign set_firewall
-	viruses: INTEGER	assign set_virueses
+	viruses: INTEGER	assign set_viruses
 	code: INTEGER		assign set_code
 	system: INTEGER		assign set_system
 	intelligence: INTEGER	assign set_intelligence
@@ -24,7 +24,7 @@ feature{ANY}
 	level: INTEGER			assign set_level
 	XP: INTEGER				assign set_xp
 	mainOption: INTEGER
-	room: INTEGER			assign set_room
+	room: INTEGER
 	playerClass: INTEGER
 	inventory: ARRAYED_LIST[STRING]
 
@@ -39,7 +39,7 @@ feature
 	firewall := 0
 	viruses := 0
 	code := 0
-	system := 0
+	system := 50
 	intelligence := 0
 	cash := 0
 	level := 0
@@ -61,6 +61,7 @@ feature
 
 	purchase
 	do
+		print("BestBuy Merchant: I see you are not properly equipped with a proper laptop and equipment...%N")
 		print("<1> Alienware 18 Laptop, (2) Tech Support, (1) USB %N")
 		print("<2> Macbook Pro, (3) USBs, (3) Tech Support, (3) Trojan Virus, (1) Anti-Virus, (1) USB Mouse %N")
 		print("<3> Jailbroken Chromebook, (4) USBs, (3) Trojan Viruses, (2) Anti-Viruses, (1) USB Mouse, (2) Tech Support, (1) Great IDE %N")
@@ -103,21 +104,21 @@ feature
 		    	firewall := 1
 		    	viruses := 4
 			    code := 3
-			    system := (random.item \\ 20) + 20
+			    system := 20--(random.item \\ 20) + 20
 			    intelligence := (random.item \\ 2) + 1
 			else if playerClass = 2 then
 				classString := "CEO"
 				firewall := random.item \\ 2 + 1
 				viruses := random.item \\ 1 + 3
 				code := random.item \\ 1 + 2
-				system := random.item \\ 20 + 30
+				system := 30--random.item \\ 20 + 30
 				intelligence := random.item \\ 2 + 4
 			else if playerClass = 3 then
 				classString := "coder"
 				firewall := random.item \\ 1 + 3
 				viruses := random.item \\ 1 + 3
 				code := random.item \\ 1 + 4
-				system := random.item \\ 20 + 20
+				system := 20--random.item \\ 20 + 20
 				intelligence := random.item \\ 2 + 2
 
 			end
@@ -272,7 +273,7 @@ feature
 				until
 					system > 0 AND enemyHP > 0
 				loop
-					print("Action: %N")
+					print("%N%NAction: %N")
 					print("<1> Send out virus. %N")
 					print("<2> Build. %N")
 					print("<3> Work on system defense. %N")
@@ -290,9 +291,9 @@ feature
 					print(enemyDefense)
 					print("%N Viruses Made: ")
 					print(virusesMade)
-					print("%N Viruses Power: ")
+					print("%N Viruses Power: %N")
 					print(virusAttack)
-					print("<6> See Full Stats")
+					print("<6> See Full Stats%N")
 
 					io.read_integer
 					action := io.last_integer
@@ -300,7 +301,7 @@ feature
 					--NOTE:- add a rescue clause here!!!
 					if action < 1 OR action >6 then
 						action := 7
-						print("You did not type in a valid number.")
+						print("%NYou did not type in a valid number.%N")
 					end
 
 					if action=1 then
@@ -309,7 +310,7 @@ feature
 								enemyHP := enemyHP - virusAttack
 								virusesMade := virusesMade - 1
 								else
-									print("You need to make a virus!")
+									print("%NYou need to make a virus!%N")
 									action := 7
 							end
 						end
@@ -322,7 +323,7 @@ feature
 							else
 								virusAttack := viruses + code // 2
 						end
-						print("You build a virus")
+						print("%NYou build a virus%N")
 
 					else
 					if action=3 then
@@ -340,22 +341,26 @@ feature
 						-- is array_item same as array_at?
 						if inventory.array_item (selectItem).is_equal ("USB") then
 							system := system + 15
+							inventory.go_i_th (selectItem)
 							inventory.remove
 							print("You used a USB and repaired your system by 15.")
 						else
-						if inventory.array_item (selectItem).is_equal ("TechSupport") then
+						if inventory.array_item (selectItem).is_equal("Tech Support") then
 							print("You get to leave battle")
+							inventory.go_i_th (selectItem)
 							inventory.remove
 							Result := True
 						else
 						if inventory.array_item (selectItem).is_equal ("Anti-Virus") then
 							myDefense := myDefense + 5
+							inventory.go_i_th (selectItem)
 							inventory.remove
 							print("You increased your system defense by 5.")
 						else
 						if inventory.array_item (selectItem).is_equal ("Trojan Virus") then
 							virusAttack := virusAttack + 3
 							virusesMade := virusesMade + 2
+							inventory.go_i_th (selectItem)
 							inventory.remove
 							print("Your viruses got more powerful and you got two for free!")
 						else
@@ -378,11 +383,11 @@ feature
 					if action/= 6 OR action/=7 then
 						if enemyAttack > myDefense then
 							system := system - (enemyAttack - myDefense)
-							print("Enemy attacks for ")
+							print("%NEnemy attacks for ")
 							print(enemyAttack - myDefense)
 						else
 							system := system - enemyAttack
-							print("Enemy attacks for ")
+							print("%NEnemy attacks for ")
 							print(enemyAttack)
 						end
 						enemyAttack := enemyAttack + 1

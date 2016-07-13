@@ -18,13 +18,14 @@ feature {NONE} -- Initialization
 			-- Run application.
 
 		local
-			accept, purchase, room, rand, open, guac, selectItem: INTEGER
+			test, accept, purchase, room, rand, open, guac, selectItem: INTEGER
 			name: STRING
-			explored: BOOLEAN
+			systemCheck,explored: BOOLEAN
 
 		do
 			--| Add your code here
 			print ("Welcome to the Dunegon game!%N")
+
 			d.classchoose
 
 			d.statread
@@ -39,13 +40,13 @@ feature {NONE} -- Initialization
 			print(d.classstring)
 			print(" like you could help us!")
 
-			print("%NVillager: So will you accept?? %N")
-			print("<0> YES	<1> NO")
+			print("%N%NVillager: So will you accept?? %N")
+			print("<0> YES	<1> NO%N")
 			io.read_integer
 			accept := io.last_integer
 
 			if accept=0 then
-				print("Vllager: Thank you so much! What is your name great")
+				print("Villager: Thank you so much! What is your name great")
 				print(d.classstring)
 				print(" ?%N")
 				io.read_line
@@ -54,7 +55,7 @@ feature {NONE} -- Initialization
 				print("%N")
 				print(name)
 				print(" That's a great name! Come to my village we will help equip you for you jouney!%N")
-				print("%N The two of you travel to the village.")
+				print("%N The two of you travel to the village.%N%N")
 				d.purchase
 
 				if d.purchaseNo = 1 then
@@ -132,11 +133,13 @@ feature {NONE} -- Initialization
 				d.cash := d.cash + 20
 				explored := False
 				room := 1
+				systemCheck := true
+
 
 				from
-					d.system := 0
+
 				until
-					d.system > 0
+					systemCheck = true
 				loop
 					if d.xp = d.level*100 then
 						print("You are almost ready to level up... Boss FIGHT!!")
@@ -248,8 +251,13 @@ feature {NONE} -- Initialization
 						end
 						end
 						end
-					end
+			  			end
+			  			if(d.system <= 0) then
+			  				systemCheck := false
+			  			end
+
 				end
+				  	print("You died... The villager morns your death.")
 
 				else
 					print("Villager: Oh... That's okay...%N")
